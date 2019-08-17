@@ -42,6 +42,14 @@ class ListData extends React.Component {
     this.setState({ editButton: true });
   };
 
+  handleDelete = e => {
+    e.preventDefault();
+    axios
+      .delete(`http://localhost:4000/api/phonebooks/${this.state.id}`)
+      .then(() => console.log('deleted'))
+      .catch(err => console.error(err));
+  };
+
   render() {
     const { index, phonebooks } = this.props;
     return (
