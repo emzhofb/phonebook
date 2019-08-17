@@ -1,26 +1,51 @@
 import React from 'react';
+import axios from 'axios';
 
 class Add extends React.Component {
   constructor() {
     super();
     this.state = {
-      addButton: true
+      addButton: true,
+      id: '',
+      name: '',
+      phone: ''
     };
-    this.handleAddButton = this.handleAddButton.bind(this);
   }
+
+  handleChange = e => {
+    const name = e.target.name;
+    this.setState({ [name]: e.target.value });
+  };
 
   handleAddButton = e => {
     e.preventDefault();
-    this.setState({
-      addButton: false
-    });
+    this.setState({ addButton: false });
   };
 
   handleSubmit = e => {
     e.preventDefault();
-    this.setState({
-      addButton: true
-    });
+    const { id, name, phone } = this.state;
+    const data = {
+      id,
+      name,
+      phone
+    };
+    axios
+      .post('http://localhost:4000/api/phonebooks', data)
+      .then(() => {
+        this.setState({
+          addButton: true,
+          id: '',
+          name: '',
+          phone: ''
+        });
+      })
+      .catch(err => console.error(err));
+  };
+
+  handleCancel = e => {
+    e.preventDefault();
+    this.setState({ addButton: true });
   };
 
   form = () => {
@@ -36,6 +61,8 @@ class Add extends React.Component {
                   className="form-control"
                   type="text"
                   name="id"
+                  value={this.state.id}
+                  onChange={this.handleChange}
                   placeholder="0123456789"
                 />
                 <label className="my-1 mr-2 mx-sm-1">name</label>
@@ -43,6 +70,8 @@ class Add extends React.Component {
                   className="form-control"
                   type="text"
                   name="name"
+                  value={this.state.name}
+                  onChange={this.handleChange}
                   placeholder="Ikhda Muhammad Wildani"
                 />
                 <label className="my-1 mr-2 mx-sm-1">phone</label>
@@ -50,6 +79,8 @@ class Add extends React.Component {
                   className="form-control"
                   type="text"
                   name="phone"
+                  value={this.state.phone}
+                  onChange={this.handleChange}
                   placeholder="081111111111"
                 />
                 <button type="submit" className="btn btn-success mx-sm-2">
@@ -57,9 +88,10 @@ class Add extends React.Component {
                   save
                 </button>
                 <button
-                  type="submit"
+                  type="button"
                   className="btn btn-warning"
                   style={{ color: 'white' }}
+                  onClick={this.handleCancel}
                 >
                   <i className="fas fa-ban mr-2" />
                   cancel
