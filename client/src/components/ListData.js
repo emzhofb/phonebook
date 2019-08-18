@@ -1,5 +1,6 @@
 import React from 'react';
 import axios from 'axios';
+import swal from 'sweetalert';
 
 class ListData extends React.Component {
   constructor(props) {
@@ -22,6 +23,7 @@ class ListData extends React.Component {
     axios
       .put(`http://localhost:4000/api/phonebooks/${this.state.id}`, data)
       .then(() => {
+        this.props.loadData();
         this.setState({ editButton: false });
       })
       .catch(err => console.error(err));
@@ -42,12 +44,31 @@ class ListData extends React.Component {
     this.setState({ editButton: true });
   };
 
-  handleDelete = e => {
-    e.preventDefault();
+  handleDelete = () => {
     axios
       .delete(`http://localhost:4000/api/phonebooks/${this.state.id}`)
-      .then(() => console.log('deleted'))
+      .then(() => this.props.loadData())
       .catch(err => console.error(err));
+  };
+
+  showAlert = e => {
+    e.preventDefault();
+    swal({
+      title: 'Are you sure?',
+      text: 'Once deleted, you will not be able to recover this data!',
+      icon: 'warning',
+      buttons: true,
+      dangerMode: true
+    }).then(willDelete => {
+      if (willDelete) {
+        swal('Poof! Your imaginary file has been deleted!', {
+          icon: 'success'
+        });
+        this.handleDelete();
+      } else {
+        swal('Your imaginary file is safe!');
+      }
+    });
   };
 
   render() {
@@ -71,7 +92,7 @@ class ListData extends React.Component {
               <button
                 type="button"
                 className="btn btn-danger"
-                onClick={this.handleDelete}
+                onClick={this.showAlert}
               >
                 <i className="far fa-trash-alt mr-1" />
                 delete
@@ -110,9 +131,8 @@ class ListData extends React.Component {
               </button>
               <button
                 type="button"
-                className="btn btn-warning mx-sm-2"
+                className="btn btn-secondary mx-sm-2"
                 onClick={this.handleCancel}
-                style={{ color: 'white' }}
               >
                 <i className="fas fa-window-close mr-2" />
                 Cancel

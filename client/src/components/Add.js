@@ -33,6 +33,7 @@ class Add extends React.Component {
     axios
       .post('http://localhost:4000/api/phonebooks', data)
       .then(() => {
+        this.props.loadData();
         this.setState({
           addButton: true,
           id: '',
