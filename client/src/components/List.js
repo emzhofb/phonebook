@@ -11,13 +11,20 @@ class List extends React.Component {
       data: [],
       id: '',
       name: '',
-      phone: ''
+      phone: '',
+      nameFilter: '',
+      phoneFilter: ''
     };
   }
 
   componentDidMount() {
     this.loadData();
   }
+
+  handleChange = e => {
+    const name = e.target.name;
+    this.setState({ [name]: e.target.value });
+  };
 
   loadData = () => {
     axios
@@ -30,12 +37,85 @@ class List extends React.Component {
       .catch(err => console.error(err));
   };
 
+  filter = () => {
+    const { nameFilter, phoneFilter } = this.state;
+
+    return (
+      <div>
+        <div className="card">
+          <div
+            className="card-header"
+            style={{ backgroundColor: 'rgb(51, 202, 111)', color: 'white' }}
+          >
+            Search Form
+          </div>
+          <div className="card-body">
+            <form>
+              <div className="form-inline">
+                <label className="my-1 mr-2 mx-sm-1">name</label>
+                <input
+                  className="form-control mx-sm-1"
+                  type="text"
+                  name="nameFilter"
+                  placeholder="Ikhda Muhammad Wildani"
+                  value={nameFilter}
+                  onChange={this.handleChange}
+                />
+                <label className="my-1 mr-2 mx-sm-1">phone</label>
+                <input
+                  className="form-control mx-sm-1"
+                  type="text"
+                  name="phoneFilter"
+                  value={phoneFilter}
+                  placeholder="081111111111"
+                  onChange={this.handleChange}
+                />
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   render() {
+    let { data, nameFilter, phoneFilter } = this.state;
+
+    if (nameFilter && phoneFilter) {
+      const filterItems = (name, phone) => {
+        return data.filter(el => {
+          return (
+            el.name.toLowerCase().indexOf(name.toLowerCase()) > -1 &&
+            el.phone.indexOf(phone) > -1
+          );
+        });
+      };
+      data = filterItems(nameFilter, phoneFilter);
+    }
+    if (nameFilter) {
+      const filterItems = name => {
+        return data.filter(el => {
+          return el.name.toLowerCase().indexOf(name.toLowerCase()) > -1;
+        });
+      };
+      data = filterItems(nameFilter);
+    }
+    if (phoneFilter) {
+      const filterItems = phone => {
+        return data.filter(el => {
+          return el.phone.indexOf(phone) > -1;
+        });
+      };
+      data = filterItems(phoneFilter);
+    }
+
     return (
       <div>
         <Title />
         <br />
         <Add loadData={this.loadData} />
+        <br />
+        {this.filter()}
         <br />
         <table className="table">
           <thead>
@@ -47,7 +127,7 @@ class List extends React.Component {
             </tr>
           </thead>
           <tbody>
-            {this.state.data.map((phonebooks, index) => {
+            {data.map((phonebooks, index) => {
               return (
                 <ListData
                   phonebooks={phonebooks}

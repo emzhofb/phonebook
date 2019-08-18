@@ -83,7 +83,7 @@ class ListData extends React.Component {
             <td>
               <button
                 type="button"
-                className="btn btn-success mx-sm-2"
+                className="btn btn-success"
                 onClick={this.handleEdit}
               >
                 <i className="fas fa-pencil-alt mr-1" />
@@ -91,7 +91,7 @@ class ListData extends React.Component {
               </button>
               <button
                 type="button"
-                className="btn btn-danger"
+                className="btn btn-danger mx-sm-2"
                 onClick={this.showAlert}
               >
                 <i className="far fa-trash-alt mr-1" />
@@ -123,7 +123,7 @@ class ListData extends React.Component {
             <td>
               <button
                 type="button"
-                className="btn btn-info mx-sm-2"
+                className="btn btn-info"
                 onClick={this.handleSave}
               >
                 <i className="far fa-sticky-note mr-2" />
