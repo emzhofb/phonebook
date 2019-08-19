@@ -3,6 +3,8 @@ import axios from 'axios';
 import ListData from './ListData';
 import Add from './Add';
 import Title from './Title';
+import { connect } from 'react-redux';
+import { loadPhonebooks } from '../actions';
 
 class List extends React.Component {
   constructor() {
@@ -18,6 +20,7 @@ class List extends React.Component {
   }
 
   componentDidMount() {
+    this.props.loadPhonebooks();
     this.loadData();
   }
 
@@ -143,4 +146,15 @@ class List extends React.Component {
   }
 }
 
-export default List;
+const mapStateToProps = state => ({
+  phonebooks: state.phonebooks
+});
+
+const mapDispatchToProps = dispatch => ({
+  loadPhonebooks: () => dispatch(loadPhonebooks())
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(List);

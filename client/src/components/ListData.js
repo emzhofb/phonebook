@@ -1,6 +1,8 @@
 import React from 'react';
 import axios from 'axios';
 import swal from 'sweetalert';
+import { connect } from 'react-redux';
+import { putPhonebook, deletePhonebook } from '../actions';
 
 class ListData extends React.Component {
   constructor(props) {
@@ -16,6 +18,10 @@ class ListData extends React.Component {
   handleSave = e => {
     e.preventDefault();
     const { name, phone } = this.state;
+    if (name && phone) {
+      this.props.putPhonebook(name, phone);
+    }
+
     const data = {
       name,
       phone
@@ -45,8 +51,11 @@ class ListData extends React.Component {
   };
 
   handleDelete = () => {
+    const { id } = this.state;
+    this.props.deletePhonebook(id);
+
     axios
-      .delete(`http://localhost:4000/api/phonebooks/${this.state.id}`)
+      .delete(`http://localhost:4000/api/phonebooks/${id}`)
       .then(() => this.props.loadData())
       .catch(err => console.error(err));
   };
@@ -145,4 +154,16 @@ class ListData extends React.Component {
   }
 }
 
-export default ListData;
+const mapDispatchToProps = dispatch => ({
+  putPhonebook: (id, name, phone) => {
+    dispatch(putPhonebook(id, name, phone));
+  },
+  deletePhonebook: id => {
+    dispatch(deletePhonebook(id));
+  }
+});
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(ListData);

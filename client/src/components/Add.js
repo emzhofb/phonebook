@@ -1,5 +1,7 @@
 import React from 'react';
 import axios from 'axios';
+import { connect } from 'react-redux';
+import { postPhonebook } from '../actions';
 
 class Add extends React.Component {
   constructor() {
@@ -10,6 +12,7 @@ class Add extends React.Component {
       name: '',
       phone: ''
     };
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   handleChange = e => {
@@ -25,6 +28,10 @@ class Add extends React.Component {
   handleSubmit = e => {
     e.preventDefault();
     const { id, name, phone } = this.state;
+    if (id && name && phone) {
+      this.props.postPhonebook(id, name, phone);
+    }
+
     const data = {
       id,
       name,
@@ -129,4 +136,13 @@ class Add extends React.Component {
   }
 }
 
-export default Add;
+const mapDispatchToProps = dispatch => ({
+  postPhonebook: (id, name, phone) => {
+    dispatch(postPhonebook(id, name, phone));
+  }
+});
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(Add);
