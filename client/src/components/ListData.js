@@ -1,5 +1,4 @@
 import React from 'react';
-import axios from 'axios';
 import swal from 'sweetalert';
 import { connect } from 'react-redux';
 import { putPhonebook, deletePhonebook } from '../actions';
@@ -17,22 +16,11 @@ class ListData extends React.Component {
 
   handleSave = e => {
     e.preventDefault();
-    const { name, phone } = this.state;
+    const { id, name, phone } = this.state;
     if (name && phone) {
-      this.props.putPhonebook(name, phone);
+      this.props.putPhonebook(id, name, phone);
+      this.setState({ editButton: false });
     }
-
-    const data = {
-      name,
-      phone
-    };
-    axios
-      .put(`http://localhost:4000/api/phonebooks/${this.state.id}`, data)
-      .then(() => {
-        this.props.loadData();
-        this.setState({ editButton: false });
-      })
-      .catch(err => console.error(err));
   };
 
   handleCancel = e => {
@@ -53,11 +41,6 @@ class ListData extends React.Component {
   handleDelete = () => {
     const { id } = this.state;
     this.props.deletePhonebook(id);
-
-    axios
-      .delete(`http://localhost:4000/api/phonebooks/${id}`)
-      .then(() => this.props.loadData())
-      .catch(err => console.error(err));
   };
 
   showAlert = e => {

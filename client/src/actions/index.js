@@ -7,7 +7,6 @@ const request = axios.create({
   timeout: 1000
 });
 
-// start load list phonebooks
 export const loadPhonebooksSuccess = phonebooks => ({
   type: 'LOAD_PHONEBOOKS_SUCCESS',
   phonebooks
@@ -84,9 +83,10 @@ export const putPhonebook = (id, name, phone) => {
   return dispatch => {
     dispatch(putPhonebookRedux(id, name, phone));
     return request
-      .post('phonebooks', { id, name, phone })
+      .put(`phonebooks/${id}`, { name, phone })
       .then(response => {
         dispatch(putPhonebookSuccess(response.data));
+        loadPhonebooks();
       })
       .catch(err => {
         console.error(err);

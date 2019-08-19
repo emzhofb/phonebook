@@ -1,5 +1,4 @@
 import React from 'react';
-import axios from 'axios';
 import { connect } from 'react-redux';
 import { postPhonebook } from '../actions';
 
@@ -30,25 +29,13 @@ class Add extends React.Component {
     const { id, name, phone } = this.state;
     if (id && name && phone) {
       this.props.postPhonebook(id, name, phone);
+      this.setState({
+        addButton: true,
+        id: '',
+        name: '',
+        phone: ''
+      });
     }
-
-    const data = {
-      id,
-      name,
-      phone
-    };
-    axios
-      .post('http://localhost:4000/api/phonebooks', data)
-      .then(() => {
-        this.props.loadData();
-        this.setState({
-          addButton: true,
-          id: '',
-          name: '',
-          phone: ''
-        });
-      })
-      .catch(err => console.error(err));
   };
 
   handleCancel = e => {

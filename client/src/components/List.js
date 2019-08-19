@@ -1,5 +1,5 @@
 import React from 'react';
-import axios from 'axios';
+// import axios from 'axios';
 import ListData from './ListData';
 import Add from './Add';
 import Title from './Title';
@@ -10,7 +10,6 @@ class List extends React.Component {
   constructor() {
     super();
     this.state = {
-      data: [],
       id: '',
       name: '',
       phone: '',
@@ -21,23 +20,11 @@ class List extends React.Component {
 
   componentDidMount() {
     this.props.loadPhonebooks();
-    this.loadData();
   }
 
   handleChange = e => {
     const name = e.target.name;
     this.setState({ [name]: e.target.value });
-  };
-
-  loadData = () => {
-    axios
-      .get('http://localhost:4000/api/phonebooks')
-      .then(result => {
-        this.setState({
-          data: [...result.data]
-        });
-      })
-      .catch(err => console.error(err));
   };
 
   filter = () => {
@@ -82,41 +69,42 @@ class List extends React.Component {
   };
 
   render() {
-    let { data, nameFilter, phoneFilter } = this.state;
+    let { phonebooks } = this.props;
+    let { nameFilter, phoneFilter } = this.state;
 
     if (nameFilter && phoneFilter) {
       const filterItems = (name, phone) => {
-        return data.filter(el => {
+        return phonebooks.filter(el => {
           return (
             el.name.toLowerCase().indexOf(name.toLowerCase()) > -1 &&
             el.phone.indexOf(phone) > -1
           );
         });
       };
-      data = filterItems(nameFilter, phoneFilter);
+      phonebooks = filterItems(nameFilter, phoneFilter);
     }
     if (nameFilter) {
       const filterItems = name => {
-        return data.filter(el => {
+        return phonebooks.filter(el => {
           return el.name.toLowerCase().indexOf(name.toLowerCase()) > -1;
         });
       };
-      data = filterItems(nameFilter);
+      phonebooks = filterItems(nameFilter);
     }
     if (phoneFilter) {
       const filterItems = phone => {
-        return data.filter(el => {
+        return phonebooks.filter(el => {
           return el.phone.indexOf(phone) > -1;
         });
       };
-      data = filterItems(phoneFilter);
+      phonebooks = filterItems(phoneFilter);
     }
 
     return (
       <div>
         <Title />
         <br />
-        <Add loadData={this.loadData} />
+        <Add />
         <br />
         {this.filter()}
         <br />
@@ -130,14 +118,8 @@ class List extends React.Component {
             </tr>
           </thead>
           <tbody>
-            {data.map((phonebooks, index) => {
-              return (
-                <ListData
-                  phonebooks={phonebooks}
-                  index={index}
-                  loadData={this.loadData}
-                />
-              );
+            {phonebooks.map((phonebooks, index) => {
+              return <ListData phonebooks={phonebooks} index={index} />;
             })}
           </tbody>
         </table>
