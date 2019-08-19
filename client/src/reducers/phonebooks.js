@@ -35,15 +35,14 @@ const phonebooks = (state = [], action) => {
       });
 
     case 'PUT_PHONEBOOK':
-      return [
-        ...state,
-        {
-          id: action.id,
-          name: action.name,
-          phone: action.phone,
-          sent: true
+      const newState = [];
+      state.forEach(item => {
+        if (item.id === action.id) {
+          return newState.push(action);
         }
-      ];
+        return newState.push(item);
+      });
+      return newState;
 
     case 'PUT_PHONEBOOK_SUCCESS':
       return action.phonebooks.map(item => {

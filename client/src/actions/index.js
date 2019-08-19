@@ -86,7 +86,6 @@ export const putPhonebook = (id, name, phone) => {
       .put(`phonebooks/${id}`, { name, phone })
       .then(response => {
         dispatch(putPhonebookSuccess(response.data));
-        loadPhonebooks();
       })
       .catch(err => {
         console.error(err);
