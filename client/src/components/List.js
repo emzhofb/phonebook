@@ -119,7 +119,7 @@ class List extends React.Component {
           </thead>
           <tbody>
             {phonebooks.map((phonebooks, index) => {
-              return <ListData phonebooks={phonebooks} index={index} />;
+              return <ListData phonebooks={phonebooks} key={index} />;
             })}
           </tbody>
         </table>
